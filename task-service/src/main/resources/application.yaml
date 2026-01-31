@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: UserService
+  datasource:
+    url: jdbc:postgresql://localhost:5433/user?currentSchema=user
+    username: user_user
+    password: user_password
+    hikari:
+      schema: user
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  liquibase:
+    change-log: classpath:/db/changelog/changelog.xml
+    enabled: true
+server:
+  port: 8010
