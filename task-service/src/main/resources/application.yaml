@@ -1,12 +1,12 @@
 spring:
   application:
-    name: UserService
+    name: TaskService
   datasource:
-    url: jdbc:postgresql://localhost:5433/user?currentSchema=user
-    username: user_user
-    password: user_password
+    url: jdbc:postgresql://localhost:5433/task?currentSchema=task
+    username: task_user
+    password: task_password
     hikari:
-      schema: user
+      schema: task
   jpa:
     hibernate:
       ddl-auto: none

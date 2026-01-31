@@ -1,9 +1,10 @@
 --liquibase formatted sql
 
---changeset yarosl.buykevich:001-create-user-table
-create table "user" (
-    id              uuid                primary key,
-    username        varchar(100)        not null,
-    password        varchar(100)        not null,
-    role_id         bigserial           not null
+--changeset yarosl.buykevich:001-create-task-table
+create table task(
+      id                bigint              not null primary key generated always as identity,
+      name              varchar(70)         not null,
+      description       text,
+      created_at        timestamp           not null,
+      updated_at        timestamp
 );
