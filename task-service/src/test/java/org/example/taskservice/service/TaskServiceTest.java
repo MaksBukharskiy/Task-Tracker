@@ -1,18 +1,22 @@
 package org.example.taskservice.service;
 
+import org.example.taskservice.dto.CreateTaskRequest;
 import org.example.taskservice.dto.TaskResponse;
 import org.example.taskservice.entity.Task;
+import org.example.taskservice.exception.TaskNotFoundException;
 import org.example.taskservice.repository.TaskRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.crypto.spec.PSource;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,4 +51,39 @@ public class TaskServiceTest {
 
         verify(taskRepository).findById(1L);
     }
+
+    @Test
+    void getById_shouldThrowException(){
+        when(taskRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                TaskNotFoundException.class,
+                () -> taskService.getById(1L)
+        );
+
+        verify(taskRepository).findById(1L);
+    }
+
+    @Test
+    void create_shouldSave(){
+        CreateTaskRequest request = new CreateTaskRequest(
+                "Test",
+                "Description"
+        );
+
+        TaskResponse response = taskService.create(request);
+        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
+
+        verify(taskRepository).save(captor.capture());
+        Task savedTask = captor.getValue();
+
+        assertEquals("Test", savedTask.getName());
+        assertEquals("Description", savedTask.getDescription());
+
+        assertNotNull(savedTask.getCreatedAt());
+        assertNotNull(savedTask.getUpdatedAt());
+
+    }
+
 }
