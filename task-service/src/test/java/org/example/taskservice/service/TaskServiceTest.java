@@ -105,6 +105,35 @@ public class TaskServiceTest {
         when(taskRepository.findById(1L))
                 .thenReturn(Optional.of(task));
 
+        TaskResponse response = taskService.update(1L, request);
+        verify(taskRepository).findById(1L);
 
+        assertEquals("New", task.getName());
+        assertEquals("New description", task.getDescription());
+
+        assertEquals("New", response.name());
+        assertEquals("New description", response.description());
+
+        assertNotNull(task.getUpdatedAt());
+    }
+
+    @Test
+    void delete_shouldDelete(){
+
+        Task task = Task.builder()
+                .id(1L)
+                .name("Test")
+                .description("Description")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        when(taskRepository.findById(1L))
+                .thenReturn(Optional.of(task));
+
+        taskService.delete(1L);
+
+        verify(taskRepository).findById(1L);
+        verify(taskRepository).delete(task);
     }
 }
