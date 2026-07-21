@@ -2,6 +2,7 @@ package org.example.taskservice.service;
 
 import org.example.taskservice.dto.CreateTaskRequest;
 import org.example.taskservice.dto.TaskResponse;
+import org.example.taskservice.dto.UpdateRequest;
 import org.example.taskservice.entity.Task;
 import org.example.taskservice.exception.TaskNotFoundException;
 import org.example.taskservice.repository.TaskRepository;
@@ -53,7 +54,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    void getById_shouldThrowException(){
+    void getById_shouldThrowException() {
         when(taskRepository.findById(1L))
                 .thenReturn(Optional.empty());
 
@@ -86,4 +87,24 @@ public class TaskServiceTest {
 
     }
 
+    @Test
+    void update_shouldUpdateTask(){
+        Task task = Task.builder()
+                .id(1L)
+                .name("Old")
+                .description("Old description")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        UpdateRequest request = new UpdateRequest(
+                "New",
+                "New description"
+        );
+
+        when(taskRepository.findById(1L))
+                .thenReturn(Optional.of(task));
+
+
+    }
 }
