@@ -136,4 +136,22 @@ public class TaskServiceTest {
         verify(taskRepository).findById(1L);
         verify(taskRepository).delete(task);
     }
+
+    @Test
+    void update_shouldThrowException(){
+        UpdateRequest request = new UpdateRequest(
+                "New",
+                "New description"
+        );
+
+        when(taskRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                TaskNotFoundException.class,
+                () -> taskService.update(1L, request)
+        );
+
+        verify(taskRepository).findById(1L);
+    }
 }
