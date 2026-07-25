@@ -1,13 +1,23 @@
 package org.example.taskservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.taskservice.repository.TaskRepository;
+import org.example.taskservice.dto.TaskResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.taskservice.dto.TaskResponse;
 import org.example.taskservice.service.TaskService;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDateTime;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TaskController.class)
 public class TaskControllerTest {
@@ -21,4 +31,25 @@ public class TaskControllerTest {
     @MockBean
     private TaskService taskService;
 
+    @Test
+    void getTask_shouldReturnTask() throws Exception{
+
+        TaskResponse response = new TaskResponse(
+                1L,
+                "Test",
+                "Description",
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+        when(taskService.getById(1L)).thenReturn(response);
+
+        mockMvc.perform(get("/tasks/task/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Test"))
+                .andExpect(jsonPath("$.description").value("Description"));
+
+    }
 }
