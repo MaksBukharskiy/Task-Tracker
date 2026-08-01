@@ -1,6 +1,7 @@
 package org.example.taskservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.taskservice.dto.CreateTaskRequest;
 import org.example.taskservice.dto.TaskResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TaskController.class)
@@ -51,5 +53,32 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.name").value("Test"))
                 .andExpect(jsonPath("$.description").value("Description"));
 
+    }
+
+    @Test
+    void create_shouldReturnCreatedTask() throws Exception{
+
+        CreateTaskRequest taskRequest = new CreateTaskRequest(
+                "Test",
+                "Description"
+        );
+
+        TaskResponse response = new TaskResponse(
+                1L,
+                "Test",
+                "Description",
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+        when(taskService.create(taskRequest)).thenReturn(response);
+
+        mockMvc.perform(post("/tasks/task")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(taskRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Test"))
+                .andExpect(jsonPath("$.description").value("Description"));
     }
 }
