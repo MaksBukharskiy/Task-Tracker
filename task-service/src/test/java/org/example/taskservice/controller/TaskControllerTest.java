@@ -6,6 +6,8 @@ import org.example.taskservice.dto.TaskResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.taskservice.dto.TaskResponse;
+import org.example.taskservice.dto.UpdateRequest;
+import org.example.taskservice.entity.Task;
 import org.example.taskservice.service.TaskService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -80,5 +84,35 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Test"))
                 .andExpect(jsonPath("$.description").value("Description"));
+    }
+
+
+    @Test
+    void should_updateTask() throws Exception{
+
+        UpdateRequest updateRequest = new UpdateRequest(
+                "Maks",
+                "Some description"
+        );
+
+        TaskResponse taskResponse = new TaskResponse(
+                1L,
+                "Maks",
+                "Some description",
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+        when(taskService.update(1L, updateRequest))
+                .thenReturn(taskResponse);
+
+        mockMvc.perform(patch("/tasks/task/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Maks"))
+                .andExpect(jsonPath("$.description").value("Some description"));
     }
 }
