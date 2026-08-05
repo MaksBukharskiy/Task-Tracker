@@ -18,11 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TaskController.class)
@@ -114,5 +111,14 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Maks"))
                 .andExpect(jsonPath("$.description").value("Some description"));
+    }
+
+    @Test
+    void delete_shouldDelete() throws Exception{
+
+        mockMvc.perform(delete("/task/task/1"))
+                .andExpect(status().isNoContent());
+
+        verify(taskService).delete(1L);
     }
 }
