@@ -116,9 +116,11 @@ public class TaskControllerTest {
     @Test
     void delete_shouldDelete() throws Exception{
 
-        mockMvc.perform(delete("/task/task/1"))
+        mockMvc.perform(delete("/tasks/task/1"))
                 .andExpect(status().isNoContent());
 
         verify(taskService).delete(1L);
     }
+
+
 }
