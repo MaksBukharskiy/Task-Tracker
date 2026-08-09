@@ -33,3 +33,4 @@ build/
 .vscode/
 /task-service/src/test/resources/
 /task-service/src/test/resources/db/
+/task-service/src/test/java/org/example/taskservice/integration/
