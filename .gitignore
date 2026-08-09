@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+/task-service/src/test/resources/
+/task-service/src/test/resources/db/
