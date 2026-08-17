@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="002-insert-initial-data" author="user">
+        <!-- Roles -->
+        <insert tableName="roles">
+            <column name="name" value="ADMIN"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="DEVELOPER"/>
+        </insert>
+
+        <!-- Privileges -->
+        <insert tableName="privileges">
+            <column name="name" value="Создание пользователя в системе"/>
+        </insert>
+        <insert tableName="privileges">
+            <column name="name" value="Удаление пользователя из системы"/>
+        </insert>
+
+        <!-- Role-Privilege mapping -->
+        <sql>
+            INSERT INTO role_privileges (role_id, privilege_id)
+            VALUES
+                ((SELECT id FROM roles WHERE name = 'ADMIN'), (SELECT id FROM privileges WHERE name = 'Создание пользователя в системе')),
+                ((SELECT id FROM roles WHERE name = 'ADMIN'), (SELECT id FROM privileges WHERE name = 'Удаление пользователя из системы'));
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
