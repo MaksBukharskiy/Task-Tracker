@@ -9,6 +9,7 @@
     <modules>
         <module>task-service</module>
         <module>task-service-api</module>
+        <module>user-service</module>
     </modules>
 
     <parent>
