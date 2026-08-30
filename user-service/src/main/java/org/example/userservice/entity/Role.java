@@ -3,7 +3,6 @@ package org.example.userservice.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import javax.naming.Name;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,8 +27,6 @@ public class Role {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id")
     )
-
-    @Builder.Default
     private Set<Privilages> privileges = new HashSet<>();
 
 }

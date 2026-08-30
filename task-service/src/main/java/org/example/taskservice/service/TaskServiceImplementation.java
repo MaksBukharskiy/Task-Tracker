@@ -7,6 +7,8 @@ import org.example.taskservice.dto.UpdateRequest;
 import org.example.taskservice.entity.Task;
 import org.example.taskservice.exception.TaskNotFoundException;
 import org.example.taskservice.repository.TaskRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +21,7 @@ public class TaskServiceImplementation implements TaskService {
 
     private final TaskRepository taskRepository;
 
-    public TaskResponse mapToResponse(Task task){
+    public TaskResponse mapToResponse(Task task) {
         return new TaskResponse(
                 task.getId(),
                 task.getName(),
@@ -31,7 +33,8 @@ public class TaskServiceImplementation implements TaskService {
 
     @Override
     @Transactional(readOnly = true)
-    public TaskResponse getById(Long id){
+    @Cacheable(value = "tasks", key = "#id")
+    public TaskResponse getById(Long id) {
 
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
@@ -40,7 +43,7 @@ public class TaskServiceImplementation implements TaskService {
     }
 
     @Override
-    public TaskResponse create(CreateTaskRequest createRequest){
+    public TaskResponse create(CreateTaskRequest createRequest) {
 
         Task task = Task.builder()
                 .name(createRequest.name())
@@ -55,7 +58,8 @@ public class TaskServiceImplementation implements TaskService {
     }
 
     @Override
-    public TaskResponse update(Long id, UpdateRequest request){
+    @CacheEvict(value = "tasks", key = "#id")
+    public TaskResponse update(Long id, UpdateRequest request) {
 
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
@@ -68,6 +72,7 @@ public class TaskServiceImplementation implements TaskService {
     }
 
     @Override
+    @CacheEvict(value = "tasks", key = "#id")
     public void delete(Long id) {
 
         Task task = taskRepository.findById(id)
